@@ -1,0 +1,1 @@
+Original directory name: 7_Mini_Event_Sourcing_Engine
