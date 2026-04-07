@@ -1,8 +1,9 @@
 module Easy where -- 宣告模組名稱
 
-import Data.List (insert) -- 用於簡單插入，或用下面的自定義邏輯
+import qualified Data.List as List -- 用於簡單插入，或用下面的自定義邏輯
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
+import qualified Data.Vector as V
 
 -- 1_TwoSum
 twoSum :: [Int] -> Int -> Maybe (Int, Int)
@@ -38,3 +39,43 @@ moveZeroes' nums =
 containsDuplicate' :: [Int] -> Bool
 containsDuplicate' [] = True
 containsDuplicate' nums = length nums /= Set.size (Set.fromList nums)
+
+
+
+-- 611. valide Triangle Number
+-- O(n^3)
+triangleNumber :: [Int] -> Int
+triangleNumber nums = length [ (a, b, c) | 
+    (c:bs)  <- List.tails sortedRev,
+    (b:as)  <- List.tails bs,
+    a       <- as,
+    a + b > c ]
+  where
+    sortedRev = reverse $ List.sort $ filter (>0) nums
+
+
+-- O(n^2)
+triangleNumber':: [Int] -> Int
+triangleNumber' nums = solve sorted (len - 1)
+    where
+        sorted = V.fromList $ List.sort (filter (>0) nums)
+        len = V.length sorted
+
+        solve _ k | k < 2 = 0
+        solve v k = countValid v 0 (k-1) k + solve v (k-1)
+
+        countValid v i j k
+            | i >= j = 0
+            | (v V.! i) + (v V.! j) > (v V.! k) = (j-i) + countValid v i (j-1) k
+            | otherwise = countValid v (i+1) j k
+
+triangleNumber'':: [Int] -> Int
+triangleNumber'' nums = sum [ countValid sorted 0 (k-1) k | k <- [ 2 .. len-1 ]]
+    where
+        sorted = V.fromList $ List.sort (filter (>0) nums)
+        len = V.length sorted
+
+        countValid v i j k
+            | i >= j = 0
+            | (v V.! i) + (v V.! j) > (v V.! k) = (j-i) + countValid v i (j-1) k
+            | otherwise = countValid v (i+1) j k

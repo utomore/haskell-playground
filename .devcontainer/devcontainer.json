@@ -1,12 +1,13 @@
 {
-    "name": "Haskell Dev 9.6.7",
-    // "image": "haskell:9.6.7",
+    "name": "HaskellDev_9.14.1_haskell-playground",
+    // "image": "haskell:9.14.1",
     "build": {
         "dockerfile": "Dockerfile"
     },
     "mounts": [
         // 2. Cabal 套件與編譯快取 (包含下載的原始碼與編譯好的庫)
         "source=haskell-cabal-cache,target=/root/.cabal",
+        "source=haskell-ghcup-cache,target=/root/.ghcup",
         // 3. 專案原始碼同步
         "source=${localWorkspaceFolder},target=/workspace,type=bind"
     ],

@@ -1,7 +1,7 @@
 module Main where
 
 -- 從 Library 引入
-import Easy (moveZeroes', twoSum')
+import Easy (moveZeroes', twoSum', triangleNumber', triangleNumber)
 import Test.QuickCheck
 
 -- 定義一個測試屬性
@@ -91,6 +91,28 @@ prop_zeros_at_end_smart = forAll (listOf frequentZeros) $ \nums ->
       tailPart = drop (length nums - zeroCount) res
    in all (== 0) tailPart
 
+-- 611
+prop_valid_triangle_number :: Property
+prop_valid_triangle_number = 
+    -- 使用 forAll 配合 choose 指定長度，這樣就不會發生 discarded 了
+    forAll (choose (0, 40)) $ \n ->
+        forAll (vectorOf n (choose (0, 100))) $ \nums ->
+            triangleNumber nums === triangleNumber' nums
+
+-- 如果想跑更專業的測試，可以加上 label 觀察分佈
+prop_with_label :: [Int] -> Property
+prop_with_label nums = 
+    label (sizeCategory (length nums)) $ 
+    length nums < 40 ==> triangleNumber nums === triangleNumber' nums
+  where
+    sizeCategory n
+        | n == 0    = "empty"
+        | n < 3     = "too small"
+        | otherwise = "valid size"
+
+
+
+
 main :: IO ()
 main = do
   putStrLn "Running tests..."
@@ -107,4 +129,7 @@ main = do
   quickCheck prop_order_preserved
   quickCheck prop_zeros_at_end_smart
 
+
+  putStrLn "Checking triangleNumber vs triangleNumber'..."
+  quickCheck prop_valid_triangle_number
   putStrLn "End tests..."
