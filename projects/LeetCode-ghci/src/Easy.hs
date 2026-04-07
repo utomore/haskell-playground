@@ -79,3 +79,18 @@ triangleNumber'' nums = sum [ countValid sorted 0 (k-1) k | k <- [ 2 .. len-1 ]]
             | i >= j = 0
             | (v V.! i) + (v V.! j) > (v V.! k) = (j-i) + countValid v i (j-1) k
             | otherwise = countValid v (i+1) j k
+
+
+-- 167. Two Sum 2 
+twoSum2' :: [Int] -> Int -> Maybe (Int, Int))
+twoSum2' nums target = go vnums 0 (len-1)
+    where
+        vnums = V.fromList nums
+        len = V.length vnums
+        go v i j 
+            | i >= j = Nothing
+            | currentSum > target   = go v i (j-1)
+            | currentSum < target   = go v (i+1) j
+            | otherwise             = Just (i+1, j+1) -- 順應從 [0 .. len) ->  [1..len-1]
+            where
+                currentSum = (v V.! i) + (v V.! j)
